@@ -1,0 +1,118 @@
+// DisposalGrid — Prisma Schema
+// SQLite via Prisma ORM
+// Matches spec from disposalgrid-ai-ide-prompt.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Material {
+  id          String           @id @default(cuid())
+  slug        String           @unique // "electronics"
+  name        String           // "Electronics"
+  description String
+  federalLaw  String?
+  iconSvg     String?
+  color       String?          // hex, for UI accents
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  counties    CountyMaterial[]
+  states      StateMaterial[]
+
+  @@map("materials")
+}
+
+model Facility {
+  id                String     @id @default(cuid())
+  epaHandlerId      String     @unique // "TXD123456789"
+  name              String
+  address           String
+  city              String
+  state             String
+  county            String
+  zipCode           String
+  latitude          Float
+  longitude         Float
+  status            String     // "active" | "inactive"
+  operationalType   String
+  hours             String?    // Storing JSON string { mon: "8am-5pm", ... }
+  acceptedCodes     String     // Storing JSON stringified array of RCRA codes
+  isPublic          Boolean    @default(true)
+  isFree            Boolean    @default(false)
+  hasAppointment    Boolean    @default(false)
+  lastVerified      DateTime
+  complianceHistory String     // Storing JSON stringified array of objects
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  hhwEvents         HhwEvent[]
+
+  @@index([state, county])
+  @@index([status])
+  @@map("facilities")
+}
+
+model HhwEvent {
+  id            String    @id @default(cuid())
+  title         String
+  county        String
+  state         String
+  address       String
+  latitude      Float
+  longitude     Float
+  startDate     DateTime
+  endDate       DateTime
+  acceptedItems String    // JSON stringified array
+  restrictions  String    // JSON stringified array
+  organizer     String
+  facilityId    String?
+  facility      Facility? @relation(fields: [facilityId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([state, county])
+  @@index([startDate])
+  @@map("hhw_events")
+}
+
+model CountyMaterial {
+  id             String   @id @default(cuid())
+  county         String
+  state          String
+  materialId     String
+  material       Material @relation(fields: [materialId], references: [id])
+  facilityCount  Int
+  freeCount      Int
+  upcomingEvents Int
+  stateLaw       String?
+  lastVerified   DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([county, state, materialId])
+  @@index([state])
+  @@map("county_materials")
+}
+
+model StateMaterial {
+  id           String   @id @default(cuid())
+  state        String   // e.g. "CA", "TX"
+  stateName    String   // e.g. "California", "Texas"
+  materialId   String
+  material     Material @relation(fields: [materialId], references: [id])
+  lawName      String?  // e.g. "AB 939 + e-Waste Act"
+  lawSummary   String?  // Plain-English one-sentence summary
+  lawCitation  String?  // Official citation
+  status       String?  // "mandatory_ban" | "voluntary" | "no_law"
+  lastVerified DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([state, materialId])
+  @@index([state])
+  @@map("state_materials")
+}
