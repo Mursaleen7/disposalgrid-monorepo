@@ -71,7 +71,7 @@ export default function HomePage() {
             className="w-full lg:w-[45%] flex justify-center lg:justify-end items-center"
           >
             <div className="w-full max-w-[480px] aspect-[4/3] rounded-uber-xl relative overflow-hidden">
-              <Image src="/illustrations/illus-1.png" alt="DisposalGrid map with recycling pin" fill className="object-cover" priority />
+              <Image src="/hero-image.jpg" alt="DisposalGrid map with recycling pin" fill className="object-cover" priority />
             </div>
           </motion.div>
         </div>
@@ -145,7 +145,7 @@ export default function HomePage() {
             {[
               { num: "01", title: "Search your material", desc: "Tell us what you need to dispose of and your location.", img: "/illustrations/illus-4.png" },
               { num: "02", title: "See verified locations", desc: "Browse EPA-verified drop-off points, hours, and what each site accepts.", img: "/illustrations/illus-3.png" },
-              { num: "03", title: "Dispose legally", desc: "Follow the instructions, stay compliant, and help keep your community safe.", img: "/illustrations/illus-5.png" },
+              { num: "03", title: "Dispose legally", desc: "Follow the instructions, stay compliant, and help keep your community safe.", img: "/illustrations/illus-5.png?v=2" },
             ].map((step) => (
               <motion.div 
                 key={step.num}
