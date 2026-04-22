@@ -35,12 +35,7 @@ export default function HomePage() {
       {/* ━━━ HERO ━━━ */}
       <section className="bg-uber-black w-full pt-[120px] pb-[80px] lg:pt-[140px] lg:pb-[100px]">
         <div className="mx-auto max-w-[1440px] w-full px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-12 lg:gap-0">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: uberEase }}
-            className="w-full lg:w-[55%] pr-0 lg:pr-16 text-white"
-          >
+          <div className="w-full lg:w-[55%] pr-0 lg:pr-16 text-white">
             <span className="uber-overline text-uber-green mb-5 inline-block">
               VERIFIED DISPOSAL LOCATIONS
             </span>
@@ -62,18 +57,13 @@ export default function HomePage() {
               </svg>
               <span>Data sourced from EPA ECHO, Envirofacts &amp; 3,200+ municipal databases</span>
             </div>
-          </motion.div>
+          </div>
           
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: uberEase }}
-            className="w-full lg:w-[45%] flex justify-center lg:justify-end items-center"
-          >
+          <div className="w-full lg:w-[45%] flex justify-center lg:justify-end items-center">
             <div className="w-full max-w-[480px] aspect-[4/3] rounded-uber-xl relative overflow-hidden">
               <Image src="/hero-image.jpg" alt="DisposalGrid map with recycling pin" fill className="object-cover" priority />
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
