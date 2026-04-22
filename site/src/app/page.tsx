@@ -99,14 +99,17 @@ export default function HomePage() {
               <Link
                 key={mat.name}
                 href={`/materials/${mat.slug}`}
-                className="flex items-center justify-between p-6 rounded-uber-md border border-uber-gray-200 bg-white hover:border-uber-black transition-colors duration-uber-fast group"
+                className="flex items-start justify-between p-6 rounded-uber-lg bg-uber-gray-50 hover:bg-uber-gray-100 transition-colors duration-uber-fast group"
               >
-                <div>
-                  <h3 className="text-[18px] font-bold text-uber-black mb-1 group-hover:text-uber-green transition-colors">{mat.name}</h3>
-                  <p className="text-[14px] text-uber-gray-500">View disposal guide</p>
+                <div className="flex-1 pr-4">
+                  <h3 className="text-[18px] font-bold text-uber-black mb-2">{mat.name}</h3>
+                  <p className="text-[14px] text-uber-gray-500 mb-4 leading-[1.5]">Find verified disposal locations near you.</p>
+                  <span className="text-[14px] font-medium text-uber-black group-hover:underline">Details</span>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-uber-gray-50 flex items-center justify-center shrink-0 ml-4 group-hover:bg-uber-black transition-colors duration-uber-fast">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-uber-gray-400 group-hover:text-white transition-colors"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                <div className="w-[100px] h-[100px] flex items-center justify-center shrink-0">
+                  <div className="w-full h-full relative">
+                    <Image src="/illustrations/illus-4.png" alt={mat.name} fill className="object-contain" />
+                  </div>
                 </div>
               </Link>
             ))}
@@ -143,7 +146,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-uber-gray-100 rounded-uber-lg overflow-hidden border border-uber-gray-100">
             {[
-              { num: "01", title: "Search your material", desc: "Tell us what you need to dispose of and your location.", img: "/illustrations/illus-4.png" },
+              { num: "01", title: "Search your material", desc: "Tell us what you need to dispose of and your location.", img: "/illustrations/illus-4.png?v=2" },
               { num: "02", title: "See verified locations", desc: "Browse EPA-verified drop-off points, hours, and what each site accepts.", img: "/illustrations/illus-3.png" },
               { num: "03", title: "Dispose legally", desc: "Follow the instructions, stay compliant, and help keep your community safe.", img: "/illustrations/illus-5.png?v=2" },
             ].map((step) => (
@@ -188,7 +191,7 @@ export default function HomePage() {
           
           <div className="w-full lg:w-[45%] flex justify-center lg:justify-end">
             <div className="w-full max-w-[400px] aspect-square rounded-uber-xl relative overflow-hidden">
-               <Image src="/illustrations/illus-2.png" alt="HHW event collection table" fill className="object-cover" />
+               <Image src="/hhw-events.png" alt="HHW event collection table" fill className="object-cover" />
             </div>
           </div>
         </div>
