@@ -10,9 +10,9 @@ import { SearchBar } from "@/components";
 
 
 const MATERIALS = [
-  { name: "Electronics", slug: "electronics" },
-  { name: "Paint & Solvents", slug: "paint-solvents" },
-  { name: "Mattresses", slug: "mattresses" },
+  { name: "Electronics", slug: "electronics", img: "/illustrations/electronics.png" },
+  { name: "Paint & Solvents", slug: "paint-solvents", img: "/illustrations/illus-4.png" },
+  { name: "Mattresses", slug: "mattresses", img: "/illustrations/illus-4.png" },
 ];
 
 const FEATURED_COUNTIES = [
@@ -100,6 +100,7 @@ export default function HomePage() {
                 key={mat.name}
                 href={`/materials/${mat.slug}`}
                 className="flex items-start justify-between p-6 rounded-uber-lg bg-uber-gray-50 hover:bg-uber-gray-100 transition-colors duration-uber-fast group"
+                style={mat.slug === 'electronics' ? { backgroundColor: '#E4E5DF' } : {}}
               >
                 <div className="flex-1 pr-4">
                   <h3 className="text-[18px] font-bold text-uber-black mb-2">{mat.name}</h3>
@@ -107,8 +108,8 @@ export default function HomePage() {
                   <span className="text-[14px] font-medium text-uber-black group-hover:underline">Details</span>
                 </div>
                 <div className="w-[100px] h-[100px] flex items-center justify-center shrink-0">
-                  <div className="w-full h-full relative">
-                    <Image src="/illustrations/illus-4.png" alt={mat.name} fill className="object-contain" />
+                  <div className="w-full h-full relative rounded-lg overflow-hidden">
+                    <Image src={mat.img} alt={mat.name} fill className="object-cover" />
                   </div>
                 </div>
               </Link>
