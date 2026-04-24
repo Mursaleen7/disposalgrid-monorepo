@@ -4,8 +4,8 @@ import { supabase } from "@/lib/supabase";
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.disposalgrid.com';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Primary paths
-  const sitemap: MetadataRoute.Sitemap = [
+  // Primary static pages
+  const result: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
     { url: `${BASE_URL}/materials`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/search`, lastModified: new Date(), changeFrequency: 'always', priority: 0.8 },
@@ -13,14 +13,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/business`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
   ];
 
-  // Materials - hardcoded since we have a fixed set
+  // Material pages
   const materials = [
-    'electronics', 'paint-solvents', 'mattresses', 'batteries', 'motor-oil', 'tires',
-    'medications', 'propane-tanks', 'sharps', 'appliances'
+    'electronics', 'paint-solvents', 'mattresses', 'batteries', 'motor-oil',
+    'tires', 'medications', 'propane-tanks', 'sharps', 'appliances'
   ];
-  
   for (const slug of materials) {
-    sitemap.push({
+    result.push({
       url: `${BASE_URL}/dispose-of/${slug}`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
@@ -28,38 +27,49 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // Try to fetch facilities, but don't fail if it doesn't work
+  // Fetch ALL facilities using pagination
   try {
-    const { data: facilities, error } = await supabase
-      .from('facilities')
-      .select('handler_id')
-      .limit(500); // Reduced limit for faster response
+    const pageSize = 1000;
+    let page = 0;
+    let hasMore = true;
 
-    if (facilities && !error) {
-      for (const fac of facilities) {
-        sitemap.push({
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from('facilities')
+        .select('handler_id')
+        .range(page * pageSize, (page + 1) * pageSize - 1);
+
+      if (error || !data || data.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      for (const fac of data) {
+        result.push({
           url: `${BASE_URL}/facility/${fac.handler_id}`,
           lastModified: new Date(),
           changeFrequency: 'monthly',
           priority: 0.7,
         });
       }
+
+      hasMore = data.length === pageSize;
+      page++;
     }
   } catch (error) {
     console.error('Error fetching facilities for sitemap:', error);
-    // Continue without facilities
   }
 
-  // Try to fetch events, but don't fail if it doesn't work
+  // Fetch events
   try {
     const { data: events, error } = await supabase
       .from('events')
       .select('event_id')
-      .limit(100); // Reduced limit
+      .limit(500);
 
     if (events && !error) {
       for (const evt of events) {
-        sitemap.push({
+        result.push({
           url: `${BASE_URL}/events/${evt.event_id}`,
           lastModified: new Date(),
           changeFrequency: 'daily',
@@ -69,10 +79,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (error) {
     console.error('Error fetching events for sitemap:', error);
-    // Continue without events
   }
 
-  return sitemap;
+  return result;
 }
 
 export const revalidate = 86400; // Revalidate once per day
