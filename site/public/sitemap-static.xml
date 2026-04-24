@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ═══ Core Pages ═══ -->
+  <url><loc>https://www.disposalgrid.com/</loc><lastmod>2026-04-24</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.disposalgrid.com/search</loc><lastmod>2026-04-24</lastmod><changefreq>always</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.disposalgrid.com/materials</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.disposalgrid.com/events</loc><lastmod>2026-04-24</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/business</loc><lastmod>2026-04-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- ═══ Material Pages ═══ -->
+  <url><loc>https://www.disposalgrid.com/dispose-of/electronics</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/batteries</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/paint-solvents</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/motor-oil</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/mattresses</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/tires</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/medications</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/propane-tanks</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/sharps</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/dispose-of/appliances</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+
+  <!-- ═══ Search by Top Cities ═══ -->
+  <url><loc>https://www.disposalgrid.com/search?location=Houston%2C%20TX</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Los%20Angeles%2C%20CA</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Chicago%2C%20IL</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Phoenix%2C%20AZ</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Dallas%2C%20TX</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=San%20Antonio%2C%20TX</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=San%20Diego%2C%20CA</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Seattle%2C%20WA</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Denver%2C%20CO</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Austin%2C%20TX</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Nashville%2C%20TN</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Portland%2C%20OR</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Las%20Vegas%2C%20NV</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Atlanta%2C%20GA</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Miami%2C%20FL</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=San%20Francisco%2C%20CA</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Indianapolis%2C%20IN</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Columbus%2C%20OH</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Charlotte%2C%20NC</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.disposalgrid.com/search?location=Jacksonville%2C%20FL</loc><lastmod>2026-04-24</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+
+</urlset>
