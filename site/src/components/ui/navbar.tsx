@@ -53,7 +53,7 @@ interface NavLink {
 
 const NAV_LINKS: NavLink[] = [
   { label: "How It Works", href: "/#how-it-works" },
-  { label: "Materials", href: "/materials" },
+  { label: "Dispose Of", href: "/materials" },
   { label: "For Businesses", href: "/business" },
   { label: "HHW Events", href: "/events" },
 ];

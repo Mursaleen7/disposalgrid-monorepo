@@ -83,7 +83,7 @@ export function FacilityCard({
   if (isCompact) {
     return (
       <Link
-        href={`/facilities/${epaHandlerId}`}
+        href={`/facility/${epaHandlerId}`}
         className={cn(
           "block rounded-uber-md border border-uber-gray-100 bg-white p-4 transition-all duration-uber-base ease-uber",
           "hover:border-uber-black hover:-translate-y-0.5",
@@ -147,7 +147,7 @@ export function FacilityCard({
       {/* ─── Action Row ─── */}
       <div className="flex items-center justify-end gap-3 mt-4">
         <Link
-          href={`/facilities/${epaHandlerId}`}
+          href={`/facility/${epaHandlerId}`}
           className="inline-flex items-center h-9 px-4 border border-uber-black text-[13px] font-medium text-uber-black rounded-uber hover:bg-uber-black hover:text-white transition-colors duration-uber-fast ease-uber"
         >
           See full details

@@ -61,25 +61,25 @@ export function JunkRemovalCTA({
         className
       )}
     >
-      <h3 className="text-[22px] font-bold text-white leading-tight">
+      <h3 className="text-[22px] font-bold text-white leading-tight mb-2">
         {headline}
       </h3>
 
-      <p className="text-[15px] text-uber-gray-400 mt-2 leading-relaxed">
+      <p className="text-[15px] text-uber-gray-400 mb-5 leading-relaxed">
         {resolvedBody}
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-5 flex flex-col sm:flex-row gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 items-stretch w-full">
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Enter your email or zip code"
-          className="flex-1 h-12 px-4 bg-white text-sm text-uber-black rounded-uber placeholder:text-uber-gray-400 outline-none border-none"
+          className="flex-1 min-w-0 h-12 px-4 bg-white text-sm text-uber-black rounded-uber placeholder:text-uber-gray-400 outline-none border-none"
         />
         <button
           type="submit"
-          className="h-12 px-6 bg-uber-green text-sm font-medium text-uber-black rounded-uber-pill hover:bg-uber-green-dark transition-colors duration-uber-fast ease-uber whitespace-nowrap"
+          className="h-12 px-8 bg-uber-green text-sm font-semibold text-uber-black rounded-uber-pill hover:bg-uber-green-dark transition-colors duration-uber-fast ease-uber whitespace-nowrap flex items-center justify-center sm:shrink-0"
         >
           {ctaText}
         </button>

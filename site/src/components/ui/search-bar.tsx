@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -69,6 +69,12 @@ const DEFAULT_MATERIALS: MaterialOption[] = [
 
 /* ─── Props ─── */
 
+export interface LocationSuggestion {
+  label: string;
+  value: string;
+  type: "city" | "zip" | "county";
+}
+
 export interface SearchBarProps {
   /** "large" (homepage hero, 64px) or "compact" (search results, 52px) */
   variant?: "large" | "compact";
@@ -76,6 +82,8 @@ export interface SearchBarProps {
   materials?: MaterialOption[];
   /** Called when user submits search */
   onSearch?: (material: string, location: string) => void;
+  /** Called when user types in location field to fetch suggestions */
+  onLocationSearch?: (query: string) => Promise<LocationSuggestion[]>;
   /** Additional class names */
   className?: string;
 }
@@ -86,23 +94,111 @@ export function SearchBar({
   variant = "large",
   materials = DEFAULT_MATERIALS,
   onSearch,
+  onLocationSearch,
   className,
 }: SearchBarProps) {
   const router = useRouter();
   const [material, setMaterial] = useState("");
   const [location, setLocation] = useState("");
   const [materialDropdownOpen, setMaterialDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [selectedMaterialLabel, setSelectedMaterialLabel] = useState("");
+  const [locationSuggestions, setLocationSuggestions] = useState<LocationSuggestion[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const pillRef = useRef<HTMLDivElement>(null);
+  const locationInputRef = useRef<HTMLInputElement>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
   const isLarge = variant === "large";
   const pillHeight = isLarge ? "h-16" : "h-[52px]";
   const ctaSize = isLarge ? "w-12 h-12" : "w-10 h-10";
 
+  // Fetch location suggestions with debounce
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (location.trim().length < 1) {
+      setLocationSuggestions([]);
+      setLocationDropdownOpen(false);
+      return;
+    }
+
+    searchTimeoutRef.current = setTimeout(async () => {
+      if (onLocationSearch) {
+        setIsLoadingSuggestions(true);
+        try {
+          const suggestions = await onLocationSearch(location);
+          setLocationSuggestions(suggestions);
+          setLocationDropdownOpen(suggestions.length > 0);
+        } catch (error) {
+          console.error("Error fetching location suggestions:", error);
+          setLocationSuggestions([]);
+        } finally {
+          setIsLoadingSuggestions(false);
+        }
+      } else {
+        // Default mock suggestions if no handler provided
+        const mockSuggestions = generateMockSuggestions(location);
+        setLocationSuggestions(mockSuggestions);
+        setLocationDropdownOpen(mockSuggestions.length > 0);
+      }
+    }, 300);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [location, onLocationSearch]);
+
+  const generateMockSuggestions = (query: string): LocationSuggestion[] => {
+    const q = query.toLowerCase();
+    const suggestions: LocationSuggestion[] = [];
+    
+    // Expanded mock cities
+    const cities = [
+      "Atlanta, GA", "Austin, TX", "Baltimore, MD", "Boston, MA", 
+      "Charlotte, NC", "Chicago, IL", "Columbus, OH", "Dallas, TX",
+      "Denver, CO", "Detroit, MI", "Fort Worth, TX", "Houston, TX",
+      "Indianapolis, IN", "Jacksonville, FL", "Kansas City, MO", "Las Vegas, NV",
+      "Los Angeles, CA", "Memphis, TN", "Miami, FL", "Milwaukee, WI",
+      "Minneapolis, MN", "Nashville, TN", "New Orleans, LA", "New York, NY",
+      "Oakland, CA", "Oklahoma City, OK", "Orlando, FL", "Philadelphia, PA",
+      "Phoenix, AZ", "Portland, OR", "Raleigh, NC", "Sacramento, CA",
+      "San Antonio, TX", "San Diego, CA", "San Francisco, CA", "San Jose, CA",
+      "Seattle, WA", "Tampa, FL", "Tucson, AZ", "Washington, DC"
+    ];
+    
+    cities.forEach(city => {
+      if (city.toLowerCase().includes(q)) {
+        suggestions.push({ label: city, value: city, type: "city" });
+      }
+    });
+
+    // Mock zip codes
+    if (/^\d+$/.test(q)) {
+      for (let i = 0; i < 5; i++) {
+        const zip = q.padEnd(5, String(i));
+        suggestions.push({ label: zip, value: zip, type: "zip" });
+      }
+    }
+
+    return suggestions.slice(0, 6);
+  };
+
   const handleMaterialSelect = (opt: MaterialOption) => {
     setMaterial(opt.value);
     setSelectedMaterialLabel(opt.label);
     setMaterialDropdownOpen(false);
+  };
+
+  const handleLocationSelect = (suggestion: LocationSuggestion) => {
+    console.log("Selected location:", suggestion);
+    setLocation(suggestion.value);
+    setLocationDropdownOpen(false);
+    locationInputRef.current?.blur();
   };
 
   const handleSubmit = () => {
@@ -152,12 +248,16 @@ export function SearchBar({
           </button>
 
           {materialDropdownOpen && (
-             <div className="absolute top-full left-0 mt-2 w-full min-w-[240px] bg-uber-black rounded-uber-md py-2 z-50 shadow-uber-card">
+             <div className="absolute top-full left-0 mt-2 w-full min-w-[240px] bg-uber-black rounded-uber-md py-2 z-[60] shadow-uber-card">
               {materials.map((opt) => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => handleMaterialSelect(opt)}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleMaterialSelect(opt);
+                  }}
                   className={cn(
                     "w-full text-left px-5 py-3 text-sm text-white hover:bg-uber-gray-800 transition-colors duration-uber-fast ease-uber",
                     material === opt.value && "font-medium text-uber-green"
@@ -172,16 +272,55 @@ export function SearchBar({
 
         <div className="w-px h-8 bg-uber-gray-200 shrink-0" />
 
-        <div className="flex items-center flex-1 min-w-0 px-4">
+        <div className="relative flex items-center flex-1 min-w-0 px-4">
           <LocationPinIcon className="w-4 h-4 text-uber-gray-400 shrink-0 mr-2" />
           <input
+            ref={locationInputRef}
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             onKeyDown={handleKeyDown}
+            onFocus={() => {
+              if (locationSuggestions.length > 0) {
+                setLocationDropdownOpen(true);
+              }
+            }}
+            onBlur={() => {
+              // Delay closing to allow click events to fire
+              setTimeout(() => setLocationDropdownOpen(false), 200);
+            }}
             placeholder="Your city or zip code"
             className="flex-1 min-w-0 bg-transparent text-sm text-uber-black placeholder:text-uber-gray-400 outline-none"
           />
+
+          {locationDropdownOpen && locationSuggestions.length > 0 && (
+            <div className="absolute top-full left-0 mt-2 w-full min-w-[280px] bg-uber-black rounded-uber-md py-2 z-[60] shadow-uber-card">
+              {isLoadingSuggestions ? (
+                <div className="px-5 py-3 text-sm text-uber-gray-400">
+                  Loading...
+                </div>
+              ) : (
+                locationSuggestions.map((suggestion, idx) => (
+                  <button
+                    key={`${suggestion.value}-${idx}`}
+                    type="button"
+                    onClick={() => handleLocationSelect(suggestion)}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      handleLocationSelect(suggestion);
+                    }}
+                    className="w-full text-left px-5 py-3 text-sm text-white hover:bg-uber-gray-800 transition-colors duration-uber-fast ease-uber flex items-center gap-3"
+                  >
+                    <LocationPinIcon className="w-4 h-4 text-uber-gray-400 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="truncate">{suggestion.label}</div>
+                      <div className="text-xs text-uber-gray-400 capitalize">{suggestion.type}</div>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         <div className={cn("shrink-0", isLarge ? "pr-2" : "pr-1.5")}>
@@ -201,8 +340,10 @@ export function SearchBar({
 
       {materialDropdownOpen && (
         <div
-          className="fixed inset-0 z-40"
-          onClick={() => setMaterialDropdownOpen(false)}
+          className="fixed inset-0 z-[50]"
+          onClick={() => {
+            setMaterialDropdownOpen(false);
+          }}
         />
       )}
     </div>

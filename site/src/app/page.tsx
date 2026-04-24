@@ -16,12 +16,12 @@ const MATERIALS = [
 ];
 
 const FEATURED_COUNTIES = [
-  { name: "Harris County, TX", material: "Electronics Disposal", locations: 14, events: 2 },
-  { name: "Los Angeles County, CA", material: "Paint & Solvents", locations: 42, events: 5 },
-  { name: "Cook County, IL", material: "Mattresses", locations: 8, events: 0 },
-  { name: "Maricopa County, AZ", material: "Tires", locations: 19, events: 1 },
-  { name: "King County, WA", material: "Batteries", locations: 26, events: 3 },
-  { name: "Miami-Dade County, FL", material: "Motor Oil", locations: 33, events: 1 },
+  { name: "Harris County, TX", material: "Electronics", materialSlug: "electronics", state: "tx", county: "harris-county", locations: 14, events: 2 },
+  { name: "Los Angeles County, CA", material: "Paint & Solvents", materialSlug: "paint-solvents", state: "ca", county: "los-angeles", locations: 42, events: 5 },
+  { name: "Cook County, IL", material: "Mattresses", materialSlug: "mattresses", state: "il", county: "cook-county", locations: 8, events: 0 },
+  { name: "Maricopa County, AZ", material: "Tires", materialSlug: "tires", state: "az", county: "maricopa-county", locations: 19, events: 1 },
+  { name: "King County, WA", material: "Batteries", materialSlug: "batteries", state: "wa", county: "king-county", locations: 26, events: 3 },
+  { name: "Miami-Dade County, FL", material: "Motor Oil", materialSlug: "motor-oil", state: "fl", county: "miami-dade-county", locations: 33, events: 1 },
 ];
 
 /* ─── Uber-style easing ─── */
@@ -88,7 +88,7 @@ export default function HomePage() {
             {MATERIALS.map((mat) => (
               <Link
                 key={mat.name}
-                href={`/materials/${mat.slug}`}
+                href={`/dispose-of/${mat.slug}`}
                 className="flex items-start justify-between p-6 rounded-uber-lg bg-uber-gray-50 hover:bg-uber-gray-100 transition-colors duration-uber-fast group"
                 style={mat.slug === 'electronics' ? { backgroundColor: '#E4E5DF' } : {}}
               >
@@ -208,7 +208,7 @@ export default function HomePage() {
             {FEATURED_COUNTIES.map((county, i) => (
               <Link 
                 key={i}
-                href="/texas/harris-county/electronics"
+                href={`/dispose-of/${county.materialSlug}/${county.state}/${county.county}`}
                 className="bg-white rounded-uber-md border border-uber-gray-200 p-6 hover:border-uber-black transition-all duration-uber-fast group"
               >
                 <h3 className="text-[18px] font-bold text-uber-black mb-1 group-hover:text-uber-green transition-colors">

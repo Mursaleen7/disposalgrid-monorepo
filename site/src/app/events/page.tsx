@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import prisma from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 
 export const metadata = {
   title: "Upcoming HHW Events | DisposalGrid",
@@ -8,9 +8,10 @@ export const metadata = {
 };
 
 export default async function EventsHub() {
-  const events = await prisma.hhwEvent.findMany({
-    orderBy: { startDate: "asc" },
-  });
+  const { data: events = [] } = await supabase
+    .from("events")
+    .select("*")
+    .order("date", { ascending: true });
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -37,17 +38,18 @@ export default async function EventsHub() {
       <div className="max-w-[1248px] mx-auto px-6 lg:px-12 py-[64px]">
         <div className="flex items-end justify-between mb-8 pb-4 border-b border-uber-gray-100">
           <h2 className="text-[24px] font-bold text-uber-black tracking-[-0.5px]">National Registry</h2>
-          <span className="text-[13px] font-medium text-uber-gray-400">{events.length} upcoming</span>
+          <span className="text-[13px] font-medium text-uber-gray-400">{events?.length || 0} upcoming</span>
         </div>
 
         <div className="space-y-3">
-          {events.map((evt) => {
-            let accepted: string[] = [];
-            try { accepted = JSON.parse(evt.acceptedItems || "[]"); } catch { accepted = []; }
-
-            const day = evt.startDate.getDate();
-            const month = evt.startDate.toLocaleString("default", { month: "short" }).toUpperCase();
-            const dateStr = evt.startDate.toLocaleDateString("en-US", {
+          {events && events.map((evt) => {
+            const accepted: string[] = [];
+            
+            // Parse date
+            const eventDate = new Date(evt.date);
+            const day = eventDate.getDate();
+            const month = eventDate.toLocaleString("default", { month: "short" }).toUpperCase();
+            const dateStr = eventDate.toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
               day: "numeric",
@@ -57,7 +59,7 @@ export default async function EventsHub() {
             return (
               <Link 
                 key={evt.id} 
-                href={`/events/${evt.id}`}
+                href={`/events/${evt.event_id}`}
                 className="flex items-start gap-6 p-6 rounded-uber-md border border-uber-gray-200 bg-white hover:border-uber-black transition-colors duration-uber-fast group"
               >
                 {/* Date Block */}
@@ -69,10 +71,10 @@ export default async function EventsHub() {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-[17px] font-bold text-uber-black mb-1 group-hover:text-uber-green transition-colors">
-                    {evt.title}
+                    {evt.name}
                   </h3>
                   <p className="text-[14px] text-uber-gray-500 mb-1">{dateStr}</p>
-                  <p className="text-[14px] text-uber-gray-400 mb-3">{evt.address} · {evt.county}, {evt.state}</p>
+                  <p className="text-[14px] text-uber-gray-400 mb-3">{evt.location} · {evt.county}, {evt.state}</p>
                   
                   {accepted.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
@@ -92,7 +94,7 @@ export default async function EventsHub() {
           })}
         </div>
 
-        {events.length === 0 && (
+        {(!events || events.length === 0) && (
           <div className="py-[80px] text-center">
             <h3 className="text-[20px] font-bold text-uber-black mb-2">No events scheduled</h3>
             <p className="text-[15px] text-uber-gray-500 max-w-[400px] mx-auto">
