@@ -4,52 +4,23 @@ import { supabase } from "@/lib/supabase";
 const BASE_URL = 'https://www.disposalgrid.com';
 
 const TOP_CITIES = [
-  { city: 'New York', state: 'NY' },
-  { city: 'Los Angeles', state: 'CA' },
-  { city: 'Chicago', state: 'IL' },
-  { city: 'Houston', state: 'TX' },
-  { city: 'Phoenix', state: 'AZ' },
-  { city: 'Philadelphia', state: 'PA' },
-  { city: 'San Antonio', state: 'TX' },
-  { city: 'San Diego', state: 'CA' },
-  { city: 'Dallas', state: 'TX' },
-  { city: 'San Jose', state: 'CA' },
-  { city: 'Austin', state: 'TX' },
-  { city: 'Jacksonville', state: 'FL' },
-  { city: 'Columbus', state: 'OH' },
-  { city: 'Charlotte', state: 'NC' },
-  { city: 'Indianapolis', state: 'IN' },
-  { city: 'San Francisco', state: 'CA' },
-  { city: 'Seattle', state: 'WA' },
-  { city: 'Denver', state: 'CO' },
-  { city: 'Nashville', state: 'TN' },
-  { city: 'Las Vegas', state: 'NV' },
-  { city: 'Portland', state: 'OR' },
-  { city: 'Baltimore', state: 'MD' },
-  { city: 'Milwaukee', state: 'WI' },
-  { city: 'Memphis', state: 'TN' },
-  { city: 'Louisville', state: 'KY' },
-  { city: 'Oklahoma City', state: 'OK' },
-  { city: 'El Paso', state: 'TX' },
-  { city: 'Washington', state: 'DC' },
-  { city: 'Albuquerque', state: 'NM' },
-  { city: 'Atlanta', state: 'GA' },
+  'New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix',
+  'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose',
+  'Austin', 'Jacksonville', 'Columbus', 'Charlotte', 'Indianapolis',
+  'San Francisco', 'Seattle', 'Denver', 'Nashville', 'Las Vegas',
+  'Portland', 'Baltimore', 'Milwaukee', 'Memphis', 'Louisville',
+  'Oklahoma City', 'El Paso', 'Washington', 'Albuquerque', 'Atlanta',
 ];
 
 function urlEntry(loc: string, priority: string, changefreq: string) {
   const now = new Date().toISOString();
-  return `  <url>
-    <loc>${loc}</loc>
-    <lastmod>${now}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`;
+  return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
 }
 
 export async function GET() {
   const urls: string[] = [];
 
-  // Core pages
+  // Core static pages
   urls.push(urlEntry(`${BASE_URL}/`, '1.0', 'daily'));
   urls.push(urlEntry(`${BASE_URL}/search`, '0.9', 'always'));
   urls.push(urlEntry(`${BASE_URL}/materials`, '0.9', 'weekly'));
@@ -65,30 +36,32 @@ export async function GET() {
   urls.push(urlEntry(`${BASE_URL}/dispose-of/sharps`, '0.8', 'weekly'));
   urls.push(urlEntry(`${BASE_URL}/dispose-of/appliances`, '0.8', 'weekly'));
 
-  // Top 5 facilities from each major city
-  for (const { city, state } of TOP_CITIES) {
-    try {
-      const { data } = await supabase
-        .from('facilities')
-        .select('handler_id')
-        .ilike('city', city)
-        .eq('state', state)
-        .limit(5);
+  try {
+    // Single query — fetch top 3 facilities per city using OR filter
+    const cityFilter = TOP_CITIES.map(c => `city.ilike.${c}`).join(',');
 
-      if (data) {
-        for (const fac of data) {
+    const { data } = await supabase
+      .from('facilities')
+      .select('handler_id, city')
+      .or(cityFilter)
+      .limit(150);
+
+    if (data) {
+      // Deduplicate: max 5 per city
+      const cityCount: Record<string, number> = {};
+      for (const fac of data) {
+        const key = fac.city?.toLowerCase() ?? '';
+        cityCount[key] = (cityCount[key] ?? 0) + 1;
+        if (cityCount[key] <= 5) {
           urls.push(urlEntry(`${BASE_URL}/facility/${fac.handler_id}`, '0.9', 'monthly'));
         }
       }
-    } catch {
-      // skip on error
     }
+  } catch {
+    // Return static pages only if Supabase fails
   }
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.join('\n')}
-</urlset>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>`;
 
   return new NextResponse(xml, {
     headers: {
