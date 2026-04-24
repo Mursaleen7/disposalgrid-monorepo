@@ -15,6 +15,21 @@ const MATERIALS = [
   { name: "Mattresses", slug: "mattresses", img: "/illustrations/illus-4.png" },
 ];
 
+const TOP_CITIES = [
+  { city: "Houston", state: "TX", slug: "houston--tx" },
+  { city: "Los Angeles", state: "CA", slug: "los-angeles--ca" },
+  { city: "Chicago", state: "IL", slug: "chicago--il" },
+  { city: "Phoenix", state: "AZ", slug: "phoenix--az" },
+  { city: "San Diego", state: "CA", slug: "san-diego--ca" },
+  { city: "Dallas", state: "TX", slug: "dallas--tx" },
+  { city: "Seattle", state: "WA", slug: "seattle--wa" },
+  { city: "Denver", state: "CO", slug: "denver--co" },
+  { city: "Austin", state: "TX", slug: "austin--tx" },
+  { city: "Nashville", state: "TN", slug: "nashville--tn" },
+  { city: "Portland", state: "OR", slug: "portland--or" },
+  { city: "Las Vegas", state: "NV", slug: "las-vegas--nv" },
+];
+
 const FEATURED_COUNTIES = [
   { name: "Harris County, TX", material: "Electronics", materialSlug: "electronics", state: "tx", county: "harris-county", locations: 14, events: 2 },
   { name: "Los Angeles County, CA", material: "Paint & Solvents", materialSlug: "paint-solvents", state: "ca", county: "los-angeles", locations: 42, events: 5 },
@@ -235,6 +250,39 @@ export default function HomePage() {
               className="inline-flex items-center h-10 px-6 border border-uber-black text-[14px] font-medium text-uber-black rounded-uber-pill hover:bg-uber-black hover:text-white transition-colors duration-uber-fast"
             >
               View all guides
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ━━━ TOP CITIES ━━━ */}
+      <section className="bg-white py-[80px] border-t border-uber-gray-100">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+          <div className="mb-8">
+            <span className="uber-overline text-uber-gray-400 mb-3 inline-block">BROWSE BY CITY</span>
+            <h2 className="text-[28px] md:text-[32px] font-bold text-uber-black tracking-[-0.5px] leading-[1.1]">
+              Top cities for disposal
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {TOP_CITIES.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/search?location=${encodeURIComponent(item.city + ', ' + item.state)}`}
+                className="inline-flex items-center gap-2 h-10 px-5 rounded-uber-pill border border-uber-gray-200 text-[14px] font-medium text-uber-black hover:border-uber-black hover:bg-uber-gray-50 transition-all duration-uber-fast"
+              >
+                <svg width="12" height="14" viewBox="0 0 12 14" fill="none" className="text-uber-gray-400 shrink-0">
+                  <path d="M6 0C3.24 0 1 2.24 1 5c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5zm0 6.5C5.17 6.5 4.5 5.83 4.5 5S5.17 3.5 6 3.5 7.5 4.17 7.5 5 6.83 6.5 6 6.5z" fill="currentColor"/>
+                </svg>
+                {item.city}, {item.state}
+              </Link>
+            ))}
+            <Link
+              href="/search"
+              className="inline-flex items-center gap-1 h-10 px-5 rounded-uber-pill border border-dashed border-uber-gray-300 text-[14px] font-medium text-uber-gray-500 hover:border-uber-black hover:text-uber-black transition-all duration-uber-fast"
+            >
+              All cities
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </Link>
           </div>
         </div>
