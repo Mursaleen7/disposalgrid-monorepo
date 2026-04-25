@@ -118,17 +118,9 @@ export function Navbar({ alwaysBordered = false }: NavbarProps) {
 
           {/* ─── Right: Actions ─── */}
           <div className="flex items-center gap-3">
-            {/* Sign in — ghost text button */}
-            <Link
-              href="/search"
-              className="hidden sm:inline-flex text-sm font-medium text-uber-black hover:text-uber-gray-600 transition-colors duration-uber-fast ease-uber"
-            >
-              Sign in
-            </Link>
-
             {/* Add your facility — pill CTA */}
             <Link
-              href="/search"
+              href="/add-facility"
               className="hidden sm:inline-flex items-center h-10 px-5 bg-uber-black text-white text-sm font-medium rounded-uber-pill hover:bg-uber-gray-800 transition-colors duration-uber-fast ease-uber"
             >
               Add your facility
@@ -168,15 +160,7 @@ export function Navbar({ alwaysBordered = false }: NavbarProps) {
             <hr className="border-uber-gray-100" />
 
             <Link
-              href="/search"
-              onClick={() => setMobileOpen(false)}
-              className="text-base font-medium text-uber-gray-500"
-            >
-              Sign in
-            </Link>
-
-            <Link
-              href="/search"
+              href="/add-facility"
               onClick={() => setMobileOpen(false)}
               className="inline-flex items-center justify-center h-12 px-6 bg-uber-black text-white text-base font-medium rounded-uber-pill"
             >
