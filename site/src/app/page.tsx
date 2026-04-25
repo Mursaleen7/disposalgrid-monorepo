@@ -83,7 +83,7 @@ export default function HomePage() {
       </section>
 
       {/* ━━━ POPULAR MATERIALS ━━━ */}
-      <section className="bg-white py-[64px] border-b border-uber-gray-100">
+      {/* <section className="bg-white py-[64px] border-b border-uber-gray-100">
         <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
           <div className="flex items-end justify-between mb-8">
             <div>
@@ -131,7 +131,7 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
 
       {/* ━━━ HOW IT WORKS ━━━ */}
