@@ -16,7 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Material pages
   const materials = [
     'electronics', 'paint-solvents', 'mattresses', 'batteries', 'motor-oil',
-    'tires', 'medications', 'propane-tanks', 'sharps', 'appliances'
+    'tires', 'prescription-drugs', 'propane-tanks', 'medical-sharps', 'appliances',
+    'chemicals', 'fire-extinguishers'
   ];
   for (const slug of materials) {
     result.push({
