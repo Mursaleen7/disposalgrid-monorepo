@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { materialsData } from "@/lib/data/materials-content";
@@ -8,6 +9,21 @@ export async function generateStaticParams() {
   return Object.keys(materialsData).map((slug) => ({
     material: slug,
   }));
+}
+
+export async function generateMetadata({ params }: { params: { material: string } }): Promise<Metadata> {
+  const content = materialsData[params.material];
+  if (!content) return {};
+
+  return {
+    title: `How to Dispose of ${content.name} | DisposalGrid`,
+    description: `Learn how to properly dispose of ${content.name.toLowerCase()}, including federal regulations, accepted items, and verified local recycling facilities.`,
+    openGraph: {
+      title: `How to Dispose of ${content.name}`,
+      description: `Complete guide on ${content.name.toLowerCase()} disposal and recycling.`,
+      images: [`/api/og?title=${encodeURIComponent(`Dispose of ${content.name}`)}`],
+    },
+  };
 }
 
 export default async function MaterialHubPage({ params }: { params: { material: string } }) {

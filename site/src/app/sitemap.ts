@@ -28,6 +28,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
+  // Material/State/County pages
+  try {
+    const { data: countyData, error: countyError } = await supabase
+      .from('facilities')
+      .select('state, county')
+      .not('county', 'is', null);
+
+    if (countyData && !countyError) {
+      const counts = new Map<string, number>();
+      for (const row of countyData) {
+        const key = `${row.state}||${row.county}`;
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      }
+
+      for (const [key, count] of Array.from(counts.entries())) {
+        if (count < 2) continue;
+        const [state, county] = key.split("||");
+        const countySlug = county.toLowerCase().replace(/\s+/g, "-");
+        
+        for (const slug of materials) {
+          result.push({
+            url: `${BASE_URL}/dispose-of/${slug}/${state.toLowerCase()}/${countySlug}`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching counties for sitemap:', error);
+  }
+
   // Fetch ALL facilities using pagination
   try {
     const pageSize = 1000;

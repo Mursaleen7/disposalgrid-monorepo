@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -37,6 +38,35 @@ export async function generateStaticParams() {
 
   // Cap to avoid build timeouts (ISR handles the rest)
   return params.slice(0, 500);
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { material: string; state: string; county: string };
+}): Promise<Metadata> {
+  const content = materialsData[params.material];
+  if (!content) return {};
+
+  const countyName = params.county
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+  const stateCode = params.state.toUpperCase();
+
+  return {
+    title: `${content.name} Disposal & Recycling in ${countyName}, ${stateCode} | DisposalGrid`,
+    description: `Find EPA-verified local drop-off points, recycling centers, and household hazardous waste facilities for ${content.name.toLowerCase()} in ${countyName}, ${stateCode}.`,
+    openGraph: {
+      title: `${content.name} Disposal in ${countyName}`,
+      description: `Find local drop-off points for ${content.name.toLowerCase()} in ${countyName}, ${stateCode}.`,
+      images: [
+        `/api/og?title=${encodeURIComponent(`${content.name} Disposal`)}&subtitle=${encodeURIComponent(
+          `${countyName}, ${stateCode}`
+        )}`,
+      ],
+    },
+  };
 }
 
 export default async function CountyPage({
