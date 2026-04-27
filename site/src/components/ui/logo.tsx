@@ -7,44 +7,47 @@ interface LogoProps {
 }
 
 export function Logo({ variant = "dark", showWordmark = true, className = "" }: LogoProps) {
-  const color = variant === "dark" ? "#1a1a1a" : "#FFFFFF";
+  const textColorClass = variant === "dark" ? "text-uber-black" : "text-white";
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      {/* ─── Logomark: Minimalist Bin ─── */}
+    <div className={`flex items-center gap-uber-2 ${className} ${textColorClass}`}>
+      {/* ─── Logomark: Location Pin + Grid Network ─── */}
       <svg
-        width="26"
-        height="32"
-        viewBox="14 6 72 88"
+        width="28"
+        height="28"
+        viewBox="0 0 32 32"
         fill="none"
+        stroke="currentColor"
         xmlns="http://www.w3.org/2000/svg"
         aria-label="DisposalGrid logomark"
+        className="shrink-0"
       >
-        <g>
-          {/* Bin Body */}
-          <path
-            d="M 27 35 L 33 85 L 69 85 L 75 35"
-            stroke={color}
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          {/* Floating Bin Lid */}
-          <path
-            d="M 22 30 L 78 15"
-            stroke={color}
-            strokeWidth="6"
-            strokeLinecap="round"
-          />
+        {/* Outer Pin */}
+        <path
+          d="M26 12C26 6.477 21.523 2 16 2C10.477 2 6 6.477 6 12C6 19 16 30 16 30C16 30 26 19 26 12Z"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        {/* Inner 3x3 Grid Network */}
+        <g fill="currentColor" stroke="none">
+          <circle cx="11" cy="7" r="1.5" />
+          <circle cx="16" cy="7" r="1.5" />
+          <circle cx="21" cy="7" r="1.5" />
+          
+          <circle cx="11" cy="12" r="1.5" />
+          <circle cx="16" cy="12" r="1.5" />
+          <circle cx="21" cy="12" r="1.5" />
+          
+          <circle cx="11" cy="17" r="1.5" />
+          <circle cx="16" cy="17" r="1.5" />
+          <circle cx="21" cy="17" r="1.5" />
         </g>
       </svg>
 
       {/* ─── Wordmark ─── */}
       {showWordmark && (
-        <span
-          className="text-[20px] leading-none tracking-[-0.3px] select-none"
-          style={{ color }}
-        >
+        <span className="text-h4 tracking-[-0.3px] select-none">
           <span className="font-normal">Disposal</span>
           <span className="font-bold">Grid</span>
         </span>

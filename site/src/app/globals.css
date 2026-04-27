@@ -86,6 +86,14 @@
     --surface-secondary: #F6F6F6;
     --surface-inverse: #000000;
     --surface-invert-secondary: #1F1F1F;
+    --surface-warning-light: #FFF8EC;
+    --surface-danger-light: #FFF0EE;
+    --surface-success-light: #E6F9EE;
+    
+    /* Semantic Text */
+    --text-warning: #B46B00;
+    --text-danger: #D44333;
+    --text-success: #038C48;
 
     /* ─── Spacing (8px base grid) ─── */
     --space-1: 4px;
@@ -253,7 +261,7 @@
     height: 8px;
     border-radius: 50%;
     background-color: var(--uber-green);
-    animation: pulse-dot 2s ease-in-out infinite;
+    animation: pulse-dot 2s var(--ease-uber) infinite;
   }
 
   @keyframes pulse-dot {
@@ -280,7 +288,7 @@
   }
 
   .animate-page-enter {
-    animation: page-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: page-enter 200ms var(--ease-uber) forwards;
   }
 
   /* Skeleton shimmer effect */
@@ -292,7 +300,7 @@
   .skeleton-shimmer {
     background: linear-gradient(90deg, #F6F6F6 25%, #EEEEEE 50%, #F6F6F6 75%);
     background-size: 200% 100%;
-    animation: shimmer 1.5s ease-in-out infinite;
+    animation: shimmer 1.5s var(--ease-uber) infinite;
   }
 }
 
@@ -302,8 +310,8 @@
 
 @layer components {
   .badge-free {
-    background-color: var(--uber-green-light);
-    color: var(--uber-green-dark);
+    background-color: var(--surface-success-light);
+    color: var(--text-success);
     border-radius: var(--radius-pill);
     font-size: var(--text-xs);
     font-weight: var(--font-medium);
@@ -311,8 +319,8 @@
   }
 
   .badge-limit {
-    background-color: #FFF8EC;
-    color: #B46B00;
+    background-color: var(--surface-warning-light);
+    color: var(--text-warning);
     border-radius: var(--radius-pill);
     font-size: var(--text-xs);
     font-weight: var(--font-medium);
@@ -329,8 +337,8 @@
   }
 
   .badge-warning {
-    background-color: #FFF0EE;
-    color: var(--danger);
+    background-color: var(--surface-danger-light);
+    color: var(--text-danger);
     border-radius: var(--radius-pill);
     font-size: var(--text-xs);
     font-weight: var(--font-medium);
@@ -338,8 +346,8 @@
   }
 
   .badge-status-mandatory {
-    background-color: var(--uber-green-light);
-    color: var(--uber-green-dark);
+    background-color: var(--surface-success-light);
+    color: var(--text-success);
     border-radius: var(--radius-pill);
     font-size: var(--text-xs);
     font-weight: var(--font-medium);
@@ -356,8 +364,8 @@
   }
 
   .badge-status-nolaw {
-    background-color: #FFF0EE;
-    color: var(--danger);
+    background-color: var(--surface-danger-light);
+    color: var(--text-danger);
     border-radius: var(--radius-pill);
     font-size: var(--text-xs);
     font-weight: var(--font-medium);

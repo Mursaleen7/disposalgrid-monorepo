@@ -243,8 +243,8 @@ const config: Config = {
   			}
   		},
   		animation: {
-  			float: 'float 3s ease-in-out infinite',
-  			'pulse-dot': 'pulse-dot 2s ease-in-out infinite',
+  			float: 'float 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+  			'pulse-dot': 'pulse-dot 2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
   			'fade-in-up': 'fade-in-up 320ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
