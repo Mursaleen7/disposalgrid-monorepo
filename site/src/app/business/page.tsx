@@ -51,7 +51,7 @@ const ACCORDION_ITEMS = [
 const TESTIMONIALS = [
   {
     id: 1,
-    quote: "Rubicon completely transformed our waste logistics. We reduced our monthly spend by 18% and finally have full visibility into our diversion rates.",
+    quote: "DisposalGrid completely transformed our waste logistics. We reduced our monthly spend by 18% and finally have full visibility into our diversion rates.",
     author: "Dan from Chicago",
     role: "Director of Facilities",
     avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop",
@@ -131,7 +131,7 @@ export default function BusinessPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen font-rubicon bg-white -mt-[72px]">
+    <div className="flex flex-col min-h-screen font-sans bg-white -mt-[72px]">
       
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           SECTION 1 — HERO
@@ -177,7 +177,7 @@ export default function BusinessPage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          SECTION 2 — RUBICONConnect App
+          SECTION 2 — DisposalGrid App
           50/50 Split (White background)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section ref={appSectionRef} className="bg-white py-24 lg:py-32 relative z-20 overflow-hidden">
