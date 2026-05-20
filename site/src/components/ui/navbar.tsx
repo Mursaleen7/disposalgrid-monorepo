@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
-/* ─── SVG Icons (Uber-style, no Heroicons) ─── */
+/* ─── SVG Icons ─── */
 
 function MenuIcon({ className }: { className?: string }) {
   return (
@@ -44,6 +45,48 @@ function CloseIcon({ className }: { className?: string }) {
   );
 }
 
+/* ─── Search Icon ─── */
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
+
+/* ─── User Icon ─── */
+
+function UserIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
 /* ─── Nav Links ─── */
 
 interface NavLink {
@@ -52,10 +95,10 @@ interface NavLink {
 }
 
 const NAV_LINKS: NavLink[] = [
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "Dispose Of", href: "/materials" },
-  { label: "For Businesses", href: "/business" },
+  { label: "Disposal Services", href: "/materials" },
   { label: "HHW Events", href: "/events" },
+  { label: "For Businesses", href: "/business" },
+  { label: "About", href: "/about" },
 ];
 
 /* ─── Props ─── */
@@ -70,6 +113,8 @@ export interface NavbarProps {
 export function Navbar({ alwaysBordered = false }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const isHomepage = pathname === "/";
 
   useEffect(() => {
     if (alwaysBordered) {
@@ -87,49 +132,110 @@ export function Navbar({ alwaysBordered = false }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [alwaysBordered]);
 
+  // On homepage: transparent with white text, scrolled = solid white with dark text
+  // On other pages: always solid white with dark text
+  const isTransparent = isHomepage && !scrolled;
+
   return (
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 h-[72px] transition-all duration-uber-base ease-uber",
-          scrolled
-            ? "bg-white border-b border-uber-gray-100"
-            : "bg-transparent"
+          "fixed top-0 left-0 right-0 z-50 h-[72px] transition-all duration-300 ease-in-out",
+          isTransparent
+            ? "bg-transparent"
+            : "bg-white border-b border-uber-gray-100 shadow-sm"
         )}
       >
-        <div className="mx-auto max-w-[1440px] h-full flex items-center justify-between px-6 lg:px-12">
+        {/* Gradient wash for legibility on homepage */}
+        {isTransparent && (
+          <div className="absolute inset-0 rubicon-nav-wash pointer-events-none" />
+        )}
+
+        <div className="relative z-10 mx-auto max-w-[1280px] h-full flex items-center justify-between px-6 lg:px-10">
           {/* ─── Left: Logo ─── */}
           <Link href="/" className="shrink-0">
-            <Logo variant="dark" />
+            <Logo variant={isTransparent ? "light" : "dark"} />
           </Link>
 
           {/* ─── Center: Nav Links (desktop only) ─── */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-base font-medium text-uber-black hover:text-uber-gray-600 transition-colors duration-uber-fast ease-uber"
+                className={cn(
+                  "text-[15px] font-medium transition-colors duration-200 font-rubicon",
+                  isTransparent
+                    ? "text-white/90 hover:text-white"
+                    : "text-uber-gray-700 hover:text-uber-black"
+                )}
               >
                 {link.label}
               </Link>
             ))}
           </div>
 
-          {/* ─── Right: Actions ─── */}
-          <div className="flex items-center gap-3">
-            {/* Add your facility — pill CTA */}
+          {/* ─── Right: Utility cluster ─── */}
+          <div className="flex items-center gap-4">
+            {/* Search + User icons */}
+            <div className="hidden lg:flex items-center gap-3">
+              <button
+                className={cn(
+                  "flex items-center justify-center w-9 h-9 rounded-full transition-colors",
+                  isTransparent
+                    ? "text-white/80 hover:text-white hover:bg-white/10"
+                    : "text-uber-gray-500 hover:text-uber-black hover:bg-uber-gray-50"
+                )}
+                aria-label="Search"
+              >
+                <SearchIcon />
+              </button>
+              <button
+                className={cn(
+                  "flex items-center justify-center w-9 h-9 rounded-full transition-colors",
+                  isTransparent
+                    ? "text-white/80 hover:text-white hover:bg-white/10"
+                    : "text-uber-gray-500 hover:text-uber-black hover:bg-uber-gray-50"
+                )}
+                aria-label="Account"
+              >
+                <UserIcon />
+              </button>
+            </div>
+
+            {/* Get Support link */}
             <Link
-              href="/add-facility"
-              className="hidden sm:inline-flex items-center h-10 px-5 bg-uber-black text-white text-sm font-medium rounded-uber-pill hover:bg-uber-gray-800 transition-colors duration-uber-fast ease-uber"
+              href="/support"
+              className={cn(
+                "hidden md:inline-flex text-[14px] font-medium transition-colors font-rubicon",
+                isTransparent
+                  ? "text-white/80 hover:text-white"
+                  : "text-uber-gray-600 hover:text-uber-black"
+              )}
             >
-              Add your facility
+              Get Support
+            </Link>
+
+            {/* Ghost CTA */}
+            <Link
+              href="/search"
+              className={cn(
+                "hidden sm:inline-flex items-center h-10 px-6 text-[14px] font-semibold rounded-full border-2 transition-all duration-200 font-rubicon",
+                isTransparent
+                  ? "border-white/50 text-white hover:border-white hover:bg-white/10"
+                  : "border-rubicon-teal text-rubicon-teal hover:bg-rubicon-teal hover:text-white"
+              )}
+            >
+              Get started
             </Link>
 
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden flex items-center justify-center w-10 h-10 text-uber-black"
+              className={cn(
+                "lg:hidden flex items-center justify-center w-10 h-10",
+                isTransparent ? "text-white" : "text-uber-black"
+              )}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
             >
               {mobileOpen ? (
@@ -151,7 +257,7 @@ export function Navbar({ alwaysBordered = false }: NavbarProps) {
                 key={link.label}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="text-[28px] font-bold text-uber-black"
+                className="text-[28px] font-bold text-uber-black font-rubicon"
               >
                 {link.label}
               </Link>
@@ -160,11 +266,19 @@ export function Navbar({ alwaysBordered = false }: NavbarProps) {
             <hr className="border-uber-gray-100" />
 
             <Link
-              href="/add-facility"
+              href="/support"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center justify-center h-12 px-6 bg-uber-black text-white text-base font-medium rounded-uber-pill"
+              className="text-[18px] font-medium text-uber-gray-600 font-rubicon"
             >
-              Add your facility
+              Get Support
+            </Link>
+
+            <Link
+              href="/search"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex items-center justify-center h-12 px-6 bg-rubicon-teal text-white text-base font-semibold rounded-full font-rubicon"
+            >
+              Get started
             </Link>
           </div>
         </div>

@@ -1,28 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { Navbar, Footer } from "@/components";
 import "./globals.css";
-
-/**
- * Inter — Primary font (Uber uses "UberMove", Inter is the spec'd fallback
- * with identical proportions). Weights: 400, 500, 700 only.
- */
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-/**
- * JetBrains Mono — Monospace font for EPA IDs, codes, etc.
- */
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -58,6 +38,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  other: {
+    "msvalidate.01": "1EB34AD0E2ADAA4E6B1496727117C955",
+  },
 };
 
 export default function RootLayout({
@@ -66,8 +49,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans antialiased bg-white text-uber-black flex flex-col min-h-screen">
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className="font-sans antialiased bg-background text-foreground flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-1 pt-[72px]">
           <div className="animate-page-enter">

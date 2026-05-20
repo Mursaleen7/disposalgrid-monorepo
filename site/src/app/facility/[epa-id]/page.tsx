@@ -365,7 +365,7 @@ export default async function FacilityProfilePage({
                   <div className="p-4 bg-white border-t border-uber-gray-100">
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        `${facility.address}, ${facility.city}, ${facility.state} ${facility.zip_code}`
+                        [facility.name, facility.address, facility.city, facility.state, facility.zip_code].filter(Boolean).join(", ")
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"

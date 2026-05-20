@@ -1,10 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ═══════════════════════════════════════════════
-   UBER DESIGN SYSTEM — CSS CUSTOM PROPERTIES
-   DisposalGrid — Pixel-perfect Uber clone tokens
+   DESIGN SYSTEM — CSS CUSTOM PROPERTIES
+   DisposalGrid — Uber tokens + Rubicon palette
    ═══════════════════════════════════════════════ */
 
 @layer base {
@@ -146,6 +148,19 @@
     --input: #E2E2E2;
     --ring: #000000;
     --radius: 8px;
+
+    /* ─── Rubicon Palette ─── */
+    --rubicon-teal: #0A2E2F;
+    --rubicon-teal-light: #0F3D3E;
+    --rubicon-teal-mid: #1A5C5E;
+    --rubicon-accent: #1A7A7A;
+    --rubicon-oceanic: #0C3839;
+    --rubicon-mint: #16B3A6;
+    --rubicon-gray: #F4F5F6;
+    --rubicon-gray-warm: #E8E9EB;
+
+    /* ─── Rubicon Typography ─── */
+    --font-rubicon: 'Montserrat', -apple-system, system-ui, sans-serif;
   }
 }
 
@@ -370,5 +385,115 @@
     font-size: var(--text-xs);
     font-weight: var(--font-medium);
     padding: 4px 10px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RUBICON HOMEPAGE — UTILITIES
+   ═══════════════════════════════════════════════ */
+
+@layer utilities {
+  /* Hero video/image overlay wash */
+  .rubicon-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(10, 46, 47, 0.75) 0%,
+      rgba(10, 46, 47, 0.60) 50%,
+      rgba(10, 46, 47, 0.80) 100%
+    );
+    z-index: 1;
+  }
+
+  /* Navbar top gradient wash for legibility over hero */
+  .rubicon-nav-wash {
+    background: linear-gradient(
+      180deg,
+      rgba(10, 46, 47, 0.50) 0%,
+      rgba(10, 46, 47, 0.00) 100%
+    );
+  }
+
+  /* Rubicon overline style — tracked out, uppercase, bold */
+  .rubicon-overline {
+    font-family: var(--font-rubicon);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* Rubicon pill button — fully rounded */
+  .rubicon-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-family: var(--font-rubicon);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 32px;
+    transition: all 200ms ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .rubicon-pill-solid {
+    background: #FFFFFF;
+    color: var(--rubicon-teal);
+  }
+  .rubicon-pill-solid:hover {
+    background: #F0F0F0;
+    transform: translateY(-1px);
+  }
+
+  .rubicon-pill-ghost {
+    background: transparent;
+    color: #FFFFFF;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+  }
+  .rubicon-pill-ghost:hover {
+    border-color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .rubicon-pill-outline {
+    background: transparent;
+    color: var(--rubicon-teal);
+    border: 2px solid var(--rubicon-teal);
+  }
+  .rubicon-pill-outline:hover {
+    background: var(--rubicon-teal);
+    color: #FFFFFF;
+  }
+
+  .rubicon-pill-dark {
+    background: var(--rubicon-teal);
+    color: #FFFFFF;
+  }
+  .rubicon-pill-dark:hover {
+    background: var(--rubicon-teal-light);
+    transform: translateY(-1px);
+  }
+
+  /* Ambient hero slow zoom animation */
+  @keyframes rubicon-hero-zoom {
+    0% {
+      transform: scale(1.0);
+    }
+    100% {
+      transform: scale(1.08);
+    }
+  }
+
+  .rubicon-hero-animate {
+    animation: rubicon-hero-zoom 20s ease-in-out infinite alternate;
+  }
+
+  /* Accordion caret rotation */
+  .rubicon-accordion-open .rubicon-caret {
+    transform: rotate(180deg);
   }
 }

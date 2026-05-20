@@ -1,288 +1,593 @@
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { SearchBar } from "@/components";
-import { Lock, ArrowRight, MapPin, Calendar, Search } from "lucide-react";
+import {
+  ChevronDown,
+  Building2,
+  Store,
+  Truck,
+  ArrowRight,
+  Search,
+} from "lucide-react";
 
-/* ─── Data ─── */
+/* ═══════════════════════════════════════════════
+   RUBICON-STYLE HOMEPAGE — DisposalGrid
+   Corporate, authoritative, environmentally conscious
+   ═══════════════════════════════════════════════ */
 
+/* ─── Accordion Data ─── */
 
-
-const MATERIALS = [
-  { name: "Electronics", slug: "electronics", img: "/illustrations/electronics.png" },
-  { name: "Paint & Solvents", slug: "paint-solvents", img: "/illustrations/illus-4.png" },
-  { name: "Mattresses", slug: "mattresses", img: "/illustrations/illus-4.png" },
+const ACCORDION_ITEMS = [
+  {
+    id: "platform",
+    title: "One platform",
+    content:
+      "A single, unified platform that aggregates disposal locations, regulations, and events from every state and county in the US. No more searching across dozens of government websites.",
+  },
+  {
+    id: "database",
+    title: "One database",
+    content:
+      "Over 15,000 verified disposal facilities sourced from EPA ECHO, Envirofacts, and 3,200+ municipal databases — updated weekly to ensure accuracy.",
+  },
+  {
+    id: "search",
+    title: "One search",
+    content:
+      "Enter your material and location. Get instant results with verified hours, accepted items, fees, and directions — no guesswork, no phone calls.",
+  },
 ];
 
-const TOP_CITIES = [
-  { city: "Houston", state: "TX", slug: "houston--tx" },
-  { city: "Los Angeles", state: "CA", slug: "los-angeles--ca" },
-  { city: "Chicago", state: "IL", slug: "chicago--il" },
-  { city: "Phoenix", state: "AZ", slug: "phoenix--az" },
-  { city: "San Diego", state: "CA", slug: "san-diego--ca" },
-  { city: "Dallas", state: "TX", slug: "dallas--tx" },
-  { city: "Seattle", state: "WA", slug: "seattle--wa" },
-  { city: "Denver", state: "CO", slug: "denver--co" },
-  { city: "Austin", state: "TX", slug: "austin--tx" },
-  { city: "Nashville", state: "TN", slug: "nashville--tn" },
-  { city: "Portland", state: "OR", slug: "portland--or" },
-  { city: "Las Vegas", state: "NV", slug: "las-vegas--nv" },
+/* ─── Who We Serve Data ─── */
+
+const SERVE_CARDS = [
+  {
+    icon: Building2,
+    title: "Households",
+    desc: "Find nearby drop-off points for electronics, paint, batteries, mattresses, and other hard-to-dispose items your regular trash service won't take.",
+    link: "/search",
+    linkText: "Household solutions",
+  },
+  {
+    icon: Store,
+    title: "Businesses",
+    desc: "Compliance-ready disposal guidance for commercial waste streams. Locate permitted facilities that accept your materials at scale.",
+    link: "/business",
+    linkText: "Business solutions",
+  },
+  {
+    icon: Truck,
+    title: "Municipalities",
+    desc: "List your facilities, promote HHW events, and ensure residents can find your services. Data integration via our open API.",
+    link: "/add-facility",
+    linkText: "Municipal partnerships",
+  },
 ];
 
-const FEATURED_COUNTIES = [
-  { name: "Harris County, TX", material: "Electronics", materialSlug: "electronics", state: "tx", county: "harris-county", locations: 14, events: 2 },
-  { name: "Los Angeles County, CA", material: "Paint & Solvents", materialSlug: "paint-solvents", state: "ca", county: "los-angeles", locations: 42, events: 5 },
-  { name: "Cook County, IL", material: "Mattresses", materialSlug: "mattresses", state: "il", county: "cook-county", locations: 8, events: 0 },
-  { name: "Maricopa County, AZ", material: "Tires", materialSlug: "tires", state: "az", county: "maricopa-county", locations: 19, events: 1 },
-  { name: "King County, WA", material: "Batteries", materialSlug: "batteries", state: "wa", county: "king-county", locations: 26, events: 3 },
-  { name: "Miami-Dade County, FL", material: "Motor Oil", materialSlug: "motor-oil", state: "fl", county: "miami-dade-county", locations: 33, events: 1 },
+/* ─── Blog Data ─── */
+
+const BLOG_POSTS = [
+  {
+    category: "Recycling Guide",
+    date: "April 28, 2026",
+    title: "The Complete Guide to E-Waste Recycling in 2026",
+    slug: "/blog/e-waste-recycling-guide-2026",
+    image:
+      "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600&h=400&fit=crop",
+  },
+  {
+    category: "Sustainability",
+    date: "April 22, 2026",
+    title: "How Circular Economy Principles Are Reshaping Waste Management",
+    slug: "/blog/circular-economy-waste-management",
+    image:
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&h=400&fit=crop",
+  },
+  {
+    category: "Community",
+    date: "April 15, 2026",
+    title: "Why Your County's HHW Events Matter More Than You Think",
+    slug: "/blog/county-hhw-events-importance",
+    image:
+      "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=600&h=400&fit=crop",
+  },
 ];
 
-/* ─── Uber-style easing ─── */
-const uberEase = [0.16, 1, 0.3, 1] as const;
+/* ─── Fade In Animation ─── */
 
-/* ─── Page ─── */
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  },
+};
+
+const stagger = {
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+/* ═══════════════════════════════════════════════
+   PAGE COMPONENT
+   ═══════════════════════════════════════════════ */
 
 export default function HomePage() {
+  const [openAccordion, setOpenAccordion] = useState<string | null>("platform");
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* ━━━ HERO ━━━ */}
-      <section className="bg-uber-black w-full py-uber-11">
-        <div className="mx-auto max-w-[1440px] w-full px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-uber-6 items-center">
-          <div className="lg:col-span-7 text-white">
-            <span className="uber-overline text-uber-green mb-5 inline-block">
-              VERIFIED DISPOSAL LOCATIONS
-            </span>
-            <h1 className="text-display md:text-hero mb-6">
-              Find legal disposal for anything, anywhere in the US.
-            </h1>
-            <p className="text-body-lg text-uber-gray-400 mb-10 max-w-[540px]">
-              Verified drop-off locations, HHW events, and recycling centers —
-              updated weekly from government data.
-            </p>
-
-            <div className="max-w-[600px] mb-5">
-              <SearchBar variant="large" />
-            </div>
-
-            <div className="flex items-center gap-2 text-[13px] text-uber-gray-500">
-              <Lock size={14} className="shrink-0" />
-              <span>Data sourced from EPA ECHO, Envirofacts &amp; 3,200+ municipal databases</span>
-            </div>
-          </div>
-          
-          <div className="lg:col-span-5 flex justify-center lg:justify-end items-center">
-            <div className="w-full max-w-[480px] aspect-[4/3] rounded-uber-xl relative overflow-hidden">
-              <Image src="/hero-image.jpg" alt="DisposalGrid map with recycling pin" fill className="object-cover" priority />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━ POPULAR MATERIALS ━━━ */}
-      {/* <section className="bg-white py-[64px] border-b border-uber-gray-100">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <span className="uber-overline text-uber-gray-400 mb-3 inline-block">MOST SEARCHED</span>
-              <h2 className="text-[28px] md:text-[32px] font-bold text-uber-black tracking-[-0.5px] leading-[1.1]">Popular materials</h2>
-            </div>
-            <Link
-              href="/materials"
-              className="hidden md:inline-flex items-center text-[14px] font-medium text-uber-black hover:text-uber-green transition-colors"
-            >
-              View all
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><polyline points="9 18 15 12 9 6"/></svg>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {MATERIALS.map((mat) => (
-              <Link
-                key={mat.name}
-                href={`/dispose-of/${mat.slug}`}
-                className="flex items-start justify-between p-6 rounded-uber-lg bg-uber-gray-50 hover:bg-uber-gray-100 transition-colors duration-uber-fast group"
-                style={mat.slug === 'electronics' ? { backgroundColor: '#E4E5DF' } : {}}
-              >
-                <div className="flex-1 pr-4">
-                  <h3 className="text-[18px] font-bold text-uber-black mb-2">{mat.name}</h3>
-                  <p className="text-[14px] text-uber-gray-500 mb-4 leading-[1.5]">Find verified disposal locations near you.</p>
-                  <span className="text-[14px] font-medium text-uber-black group-hover:underline">Details</span>
-                </div>
-                <div className="w-[100px] h-[100px] flex items-center justify-center shrink-0">
-                  <div className="w-full h-full relative rounded-lg overflow-hidden">
-                    <Image src={mat.img} alt={mat.name} fill className="object-cover" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-6 md:hidden text-center">
-            <Link
-              href="/materials"
-              className="inline-flex items-center text-[14px] font-medium text-uber-black"
-            >
-              View all materials
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><polyline points="9 18 15 12 9 6"/></svg>
-            </Link>
-          </div>
-        </div>
-      </section> */}
-
-
-      {/* ━━━ HOW IT WORKS ━━━ */}
-      <section id="how-it-works" className="bg-white py-uber-10">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mb-uber-8"
+    <div className="flex flex-col min-h-screen font-rubicon -mt-[72px]">
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 1 — HERO
+          Full viewport, background image + dark overlay
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Video */}
+        <div className="absolute inset-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
           >
-            <span className="uber-overline text-uber-gray-500 mb-4 inline-block">HOW IT WORKS</span>
-            <h2 className="text-h1 mb-4">Find disposal. Fast.</h2>
-            <p className="text-body-lg text-uber-gray-500 max-w-[520px]">
-              Our directory simplifies complex municipal rules into three easy steps.
-            </p>
+            <source src="/videos/hero.mp4" type="video/mp4" />
+          </video>
+        </div>
+
+        {/* Dark overlay wash */}
+        <div className="rubicon-hero-overlay" />
+
+        {/* Hero Content */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+          className="relative z-10 text-center max-w-[900px] mx-auto px-6"
+        >
+          {/* Overline */}
+          <motion.span
+            variants={fadeUp}
+            className="rubicon-overline text-white/70 mb-6 block"
+          >
+            WASTE, RECYCLING, AND SUSTAINABILITY
+          </motion.span>
+
+          {/* Headline */}
+          <motion.h1
+            variants={fadeUp}
+            className="text-[40px] md:text-[56px] lg:text-[68px] font-light text-white leading-[1.05] tracking-[-1.5px] mb-8"
+          >
+            National Hazardous Waste & <br className="hidden md:block" />
+            Material Disposal Directory.
+          </motion.h1>
+
+          {/* Massive Search Bar */}
+          <motion.form
+            variants={fadeUp}
+            action="/search"
+            className="w-full max-w-[850px] mx-auto bg-white rounded-[24px] md:rounded-full flex flex-col md:flex-row items-center p-2 shadow-2xl mt-8 md:mt-12"
+          >
+            <div className="flex-1 flex items-center px-4 md:px-6 w-full h-14 md:h-16">
+              <Search className="text-uber-gray-400 w-[22px] h-[22px] shrink-0" />
+              <input
+                type="text"
+                name="q"
+                placeholder="What material? (e.g. Paint, E-waste)"
+                className="w-full bg-transparent border-none outline-none text-uber-black text-[16px] md:text-[18px] ml-4 placeholder:text-uber-gray-400 h-full"
+              />
+            </div>
+            
+            <div className="hidden md:block w-[1px] h-10 bg-uber-gray-200 shrink-0" />
+            <div className="md:hidden w-[calc(100%-32px)] mx-auto h-[1px] bg-uber-gray-100 shrink-0" />
+            
+            <div className="flex-1 flex items-center px-4 md:px-6 w-full h-14 md:h-16">
+              <svg className="text-uber-gray-400 w-[22px] h-[22px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <input
+                type="text"
+                name="loc"
+                placeholder="Location (ZIP or City)"
+                className="w-full bg-transparent border-none outline-none text-uber-black text-[16px] md:text-[18px] ml-4 placeholder:text-uber-gray-400 h-full"
+              />
+            </div>
+            
+            <button
+              type="submit"
+              className="bg-rubicon-teal hover:bg-rubicon-teal-light transition-colors text-white px-8 md:px-12 h-14 md:h-16 w-full md:w-auto rounded-[18px] md:rounded-full text-[16px] md:text-[17px] font-semibold shrink-0 mt-2 md:mt-0 md:ml-2 flex items-center justify-center"
+            >
+              Find Drop-off
+            </button>
+          </motion.form>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
+        >
+          <div className="w-[1px] h-[60px] bg-gradient-to-b from-white/40 to-transparent" />
+        </motion.div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 2 — WHAT WE DO
+          White background, split-screen typographical
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="bg-white py-24 md:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1280px] px-6 lg:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={stagger}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start"
+          >
+            {/* Left: Overline + Heading */}
+            <motion.div variants={fadeUp}>
+              <span className="rubicon-overline text-rubicon-teal-accent mb-5 block">
+                WHAT WE DO
+              </span>
+              <h2 className="text-[32px] md:text-[40px] lg:text-[48px] font-bold text-rubicon-teal leading-[1.1] tracking-[-1px]">
+                Comprehensive waste disposal guidance for every material,
+                everywhere.
+              </h2>
+            </motion.div>
+
+            {/* Right: Body copy */}
+            <motion.div variants={fadeUp} className="lg:pt-14">
+              <p className="text-[17px] text-uber-gray-600 leading-[1.8] mb-6">
+                DisposalGrid is the nation&apos;s most complete directory of
+                verified disposal locations. We aggregate data from the EPA,
+                state environmental agencies, and over 3,200 municipal
+                databases to give you one simple answer to a frustrating
+                question: <em>&quot;Where do I take this?&quot;</em>
+              </p>
+              <p className="text-[17px] text-uber-gray-600 leading-[1.8]">
+                From hazardous household chemicals to electronics, mattresses,
+                tires, and beyond — we cover the materials your regular trash
+                service won&apos;t accept, with verified hours, fees, and
+                directions for every facility.
+              </p>
+            </motion.div>
           </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-uber-gray-100 rounded-uber-lg overflow-hidden border border-uber-gray-100">
-            {[
-              { num: "01", title: "Search your material", desc: "Tell us what you need to dispose of and your location.", img: "/illustrations/illus-4.png?v=2" },
-              { num: "02", title: "See verified locations", desc: "Browse EPA-verified drop-off points, hours, and what each site accepts.", img: "/illustrations/illus-3.png" },
-              { num: "03", title: "Dispose legally", desc: "Follow the instructions, stay compliant, and help keep your community safe.", img: "/illustrations/illus-5.png?v=2" },
-            ].map((step) => (
-              <motion.div 
-                key={step.num}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="bg-white p-8 group"
-              >
-                <div className="relative w-full h-[200px] rounded-uber-md mb-8 overflow-hidden bg-uber-gray-50">
-                   <Image src={step.img} alt={step.title} fill className="object-cover group-hover:scale-105 transition-transform duration-uber-slow ease-uber" />
-                </div>
-                <span className="text-sm font-bold text-uber-gray-300 block mb-2">{step.num}</span>
-                <h3 className="text-h4 mb-2 tracking-[-0.3px]">{step.title}</h3>
-                <p className="text-[15px] text-uber-gray-500 leading-[1.6]">{step.desc}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* ━━━ HHW EVENTS PROMO ━━━ */}
-      <section className="bg-uber-green py-uber-9">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-uber-6 items-center">
-          <div className="lg:col-span-7">
-            <span className="uber-overline text-uber-black/50 mb-4 inline-block">TIME-SENSITIVE</span>
-            <h2 className="text-h1 mb-5">
-              Household Hazardous Waste events near you
-            </h2>
-            <p className="text-body-lg text-uber-black/70 max-w-[480px] mb-8">
-              One-day collection events hosted by your county — the safest way to dispose of chemicals, batteries, and paint.
-            </p>
-            <Link
-              href="/events"
-              className="inline-flex items-center h-12 px-8 bg-uber-black text-white text-sm font-medium rounded-uber-pill hover:bg-uber-gray-800 transition-colors duration-uber-fast"
-            >
-              Find upcoming events
-              <ArrowRight size={16} strokeWidth={2} className="ml-2" />
-            </Link>
-          </div>
-          
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
-            <div className="w-full max-w-[400px] aspect-square rounded-uber-xl relative overflow-hidden">
-               <Image src="/hhw-events.png" alt="HHW event collection table" fill className="object-cover" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━ FEATURED COUNTIES ━━━ */}
-      <section className="bg-uber-gray-50 py-uber-10">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <span className="uber-overline text-uber-gray-500 mb-3 inline-block">DISPOSAL GUIDES</span>
-              <h2 className="text-h1">Popular disposal guides</h2>
-            </div>
-            <Link 
-              href="/search" 
-              className="hidden md:inline-flex items-center h-10 px-6 border border-uber-black text-sm font-medium text-uber-black rounded-uber-pill hover:bg-uber-black hover:text-white transition-colors duration-uber-fast"
-            >
-              View all
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-uber-4 mb-8">
-            {FEATURED_COUNTIES.map((county, i) => (
-              <Link 
-                key={i}
-                href={`/dispose-of/${county.materialSlug}/${county.state}/${county.county}`}
-                className="bg-white rounded-uber-md border border-uber-gray-200 p-6 hover:border-uber-black transition-all duration-uber-fast group"
-              >
-                <h3 className="text-body-lg font-bold text-uber-black mb-1 group-hover:text-uber-green transition-colors">
-                  {county.name}
-                </h3>
-                <p className="text-sm font-medium text-uber-gray-500 mb-4">{county.material}</p>
-                <div className="flex items-center gap-4 text-xs text-uber-gray-400">
-                  <span className="flex items-center gap-1">
-                    <MapPin size={14} />
-                    {county.locations} locations
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Calendar size={14} />
-                    {county.events} events
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center md:hidden">
-            <Link 
-              href="/search" 
-              className="inline-flex items-center h-10 px-6 border border-uber-black text-sm font-medium text-uber-black rounded-uber-pill hover:bg-uber-black hover:text-white transition-colors duration-uber-fast"
-            >
-              View all guides
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━ TOP CITIES ━━━ */}
-      <section className="bg-white py-uber-9 border-t border-uber-gray-100">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-          <div className="mb-8">
-            <span className="uber-overline text-uber-gray-400 mb-3 inline-block">BROWSE BY CITY</span>
-            <h2 className="text-h2">
-              Top cities for disposal
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {TOP_CITIES.map((item) => (
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 3 — HOW WE DO IT
+          Deep teal background, 50/50 with accordion
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="bg-rubicon-teal py-24 md:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1280px] px-6 lg:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={stagger}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20"
+          >
+            {/* Left: Heading + CTA */}
+            <motion.div variants={fadeUp}>
+              <span className="rubicon-overline text-white/50 mb-5 block">
+                HOW WE DO IT
+              </span>
+              <h2 className="text-[32px] md:text-[40px] lg:text-[48px] font-bold text-white leading-[1.1] tracking-[-1px] mb-8">
+                Everything you need. One search away.
+              </h2>
               <Link
-                key={item.slug}
-                href={`/search?location=${encodeURIComponent(item.city + ', ' + item.state)}`}
-                className="inline-flex items-center gap-2 h-10 px-5 rounded-uber-pill border border-uber-gray-200 text-sm font-medium text-uber-black hover:border-uber-black hover:bg-uber-gray-50 transition-all duration-uber-fast"
+                href="/search"
+                className="rubicon-pill rubicon-pill-solid"
               >
-                <MapPin size={14} className="text-uber-gray-400 shrink-0" />
-                {item.city}, {item.state}
+                Get Started
               </Link>
-            ))}
+            </motion.div>
+
+            {/* Right: Accordion */}
+            <motion.div variants={fadeUp} className="space-y-0">
+              {ACCORDION_ITEMS.map((item) => {
+                const isOpen = openAccordion === item.id;
+                return (
+                  <div
+                    key={item.id}
+                    className="border-t border-white/15 last:border-b"
+                  >
+                    <button
+                      onClick={() =>
+                        setOpenAccordion(isOpen ? null : item.id)
+                      }
+                      className={`w-full flex items-center justify-between py-6 text-left transition-colors ${
+                        isOpen ? "rubicon-accordion-open" : ""
+                      }`}
+                    >
+                      <span className="text-[20px] md:text-[22px] font-semibold text-white">
+                        {item.title}
+                      </span>
+                      <ChevronDown
+                        size={22}
+                        className={`rubicon-caret text-white/60 transition-transform duration-300 shrink-0 ml-4 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isOpen ? "max-h-[200px] pb-6" : "max-h-0"
+                      }`}
+                    >
+                      <p className="text-[16px] text-white/60 leading-[1.7] max-w-[480px]">
+                        {item.content}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 4 — WHO WE SERVE
+          Light gray background, 3-column card grid
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="bg-rubicon-gray py-24 md:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1280px] px-6 lg:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={stagger}
+          >
+            <motion.div variants={fadeUp} className="mb-16">
+              <span className="rubicon-overline text-rubicon-teal-accent mb-5 block">
+                WHO WE SERVE
+              </span>
+              <h2 className="text-[32px] md:text-[40px] lg:text-[48px] font-bold text-rubicon-teal leading-[1.1] tracking-[-1px]">
+                Built for everyone
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {SERVE_CARDS.map((card) => {
+                const Icon = card.icon;
+                return (
+                  <motion.div
+                    key={card.title}
+                    variants={fadeUp}
+                    className="bg-white rounded-2xl p-8 md:p-10 flex flex-col"
+                  >
+                    {/* Icon */}
+                    <div className="w-14 h-14 rounded-xl bg-rubicon-gray flex items-center justify-center mb-6">
+                      <Icon
+                        size={28}
+                        strokeWidth={1.5}
+                        className="text-rubicon-teal"
+                      />
+                    </div>
+
+                    <h3 className="text-[22px] font-bold text-rubicon-teal mb-3">
+                      {card.title}
+                    </h3>
+                    <p className="text-[15px] text-uber-gray-500 leading-[1.7] mb-6 flex-1">
+                      {card.desc}
+                    </p>
+
+                    <Link
+                      href={card.link}
+                      className="text-[15px] font-semibold text-rubicon-teal-accent hover:text-rubicon-teal underline underline-offset-4 decoration-rubicon-teal-accent/30 hover:decoration-rubicon-teal transition-colors inline-flex items-center gap-1"
+                    >
+                      {card.linkText}
+                      <ArrowRight size={16} />
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 5 — EXPERT GUIDANCE
+          White background, 50/50 image-to-text split
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="bg-white py-24 md:py-32 lg:py-40">
+        <div className="mx-auto max-w-[1280px] px-6 lg:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={stagger}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+          >
+            {/* Left: Image */}
+            <motion.div
+              variants={fadeUp}
+              className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=600&fit=crop"
+                alt="Workers sorting materials at recycling facility"
+                fill
+                className="object-cover"
+              />
+            </motion.div>
+
+            {/* Right: Text */}
+            <motion.div variants={fadeUp}>
+              <span className="rubicon-overline text-rubicon-teal-accent mb-5 block">
+                EXPERT GUIDANCE
+              </span>
+              <h2 className="text-[32px] md:text-[40px] lg:text-[44px] font-bold text-rubicon-teal leading-[1.1] tracking-[-1px] mb-6">
+                Navigate complex disposal regulations with confidence.
+              </h2>
+              <p className="text-[17px] text-uber-gray-600 leading-[1.8] mb-8">
+                Every state has different rules. Every county has different
+                facilities. We cut through the complexity by verifying each
+                location&apos;s accepted materials, operating hours, and fees —
+                so you can dispose of items legally, safely, and without the
+                runaround.
+              </p>
+              <Link
+                href="/materials"
+                className="rubicon-pill rubicon-pill-outline"
+              >
+                Explore advisory services
+                <ArrowRight size={18} className="ml-2" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 6 — LATEST FROM THE BLOG
+          White background, 3-column card grid
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="bg-rubicon-gray py-24 md:py-32 lg:py-36">
+        <div className="mx-auto max-w-[1280px] px-6 lg:px-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={stagger}
+          >
+            <motion.div variants={fadeUp} className="mb-14">
+              <span className="rubicon-overline text-rubicon-teal-accent mb-5 block">
+                LATEST FROM THE BLOG
+              </span>
+              <h2 className="text-[32px] md:text-[40px] font-bold text-rubicon-teal leading-[1.1] tracking-[-1px]">
+                Stories &amp; insights
+              </h2>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {BLOG_POSTS.map((post) => (
+                <motion.div key={post.slug} variants={fadeUp}>
+                  <Link
+                    href={post.slug}
+                    className="group block bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  >
+                    {/* Card Image */}
+                    <div className="relative w-full aspect-[16/10] overflow-hidden">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="p-6">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-[12px] font-semibold text-rubicon-teal-accent uppercase tracking-wider">
+                          {post.category}
+                        </span>
+                        <span className="text-[12px] text-uber-gray-400">
+                          {post.date}
+                        </span>
+                      </div>
+                      <h3 className="text-[18px] font-bold text-rubicon-teal leading-[1.3] mb-4 group-hover:text-rubicon-teal-mid transition-colors">
+                        {post.title}
+                      </h3>
+                      <span className="text-[14px] font-semibold text-rubicon-teal-accent group-hover:underline">
+                        Read story →
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 7 — PRE-FOOTER CTA
+          Deep teal background with large watermark logo
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="relative bg-rubicon-teal py-24 md:py-32 lg:py-40 overflow-hidden">
+        {/* Watermark Logo — large, low-opacity */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+          <svg
+            width="500"
+            height="500"
+            viewBox="0 0 32 32"
+            fill="none"
+            stroke="rgba(255,255,255,0.04)"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-[300px] h-[300px] md:w-[500px] md:h-[500px]"
+          >
+            <path
+              d="M26 12C26 6.477 21.523 2 16 2C10.477 2 6 6.477 6 12C6 19 16 30 16 30C16 30 26 19 26 12Z"
+              strokeWidth="1"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <g fill="rgba(255,255,255,0.04)" stroke="none">
+              <circle cx="11" cy="7" r="1.5" />
+              <circle cx="16" cy="7" r="1.5" />
+              <circle cx="21" cy="7" r="1.5" />
+              <circle cx="11" cy="12" r="1.5" />
+              <circle cx="16" cy="12" r="1.5" />
+              <circle cx="21" cy="12" r="1.5" />
+              <circle cx="11" cy="17" r="1.5" />
+              <circle cx="16" cy="17" r="1.5" />
+              <circle cx="21" cy="17" r="1.5" />
+            </g>
+          </svg>
+        </div>
+
+        {/* CTA Content */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={stagger}
+          className="relative z-10 text-center max-w-[600px] mx-auto px-6"
+        >
+          <motion.span
+            variants={fadeUp}
+            className="rubicon-overline text-white/40 mb-5 block"
+          >
+            READY TO START?
+          </motion.span>
+          <motion.h2
+            variants={fadeUp}
+            className="text-[36px] md:text-[48px] font-bold text-white leading-[1.1] tracking-[-1px] mb-6"
+          >
+            Take the next step
+          </motion.h2>
+          <motion.p
+            variants={fadeUp}
+            className="text-[17px] text-white/50 leading-[1.7] mb-10"
+          >
+            Find verified disposal locations for any material, in any city
+            across the United States.
+          </motion.p>
+          <motion.div variants={fadeUp}>
             <Link
               href="/search"
-              className="inline-flex items-center gap-1 h-10 px-5 rounded-uber-pill border border-dashed border-uber-gray-300 text-sm font-medium text-uber-gray-500 hover:border-uber-black hover:text-uber-black transition-all duration-uber-fast"
+              className="rubicon-pill rubicon-pill-solid text-[16px] px-10 py-4"
             >
-              All cities
-              <ArrowRight size={14} />
+              <Search size={18} className="mr-2" />
+              Search now
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
     </div>
   );

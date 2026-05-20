@@ -188,7 +188,7 @@ export default async function CountyPage({
                   key={facility.id}
                   name={facility.name}
                   epaHandlerId={facility.handler_id}
-                  address={`${facility.address ?? ""}, ${facility.city ?? ""}, ${facility.state} ${facility.zip_code ?? ""}`}
+                  address={[facility.address, facility.city, facility.state, facility.zip_code].filter(Boolean).join(", ")}
                   isActive={isActive}
                   badges={badges as any}
                 />

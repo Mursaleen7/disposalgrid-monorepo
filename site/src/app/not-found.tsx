@@ -1,46 +1,64 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { SearchBar } from "@/components";
 
 export const metadata: Metadata = {
-  title: "Page Not Found",
+  title: "Page Not Found | Rubicon",
 };
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] bg-white px-6 py-20 lg:py-32">
-      <div className="w-full max-w-[640px] text-center flex flex-col items-center">
-        <span className="uber-overline text-uber-gray-500 mb-5 inline-block">
-          404 ERROR
-        </span>
-        <h1 className="text-[48px] md:text-[64px] font-bold text-uber-black tracking-[-1.5px] leading-[1.05] mb-6">
-          We can't find that page
-        </h1>
-        <p className="text-[18px] text-uber-gray-500 mb-10 max-w-[500px] leading-[1.6]">
-          The disposal location, guide, or page you're looking for might have been removed, or the link is incorrect.
-        </p>
+    <div className="relative w-full min-h-screen flex items-center bg-[#0C3839] overflow-hidden -mt-[72px] pt-[72px]">
+      {/* Background Graphic Element - Massive 'R' Watermark */}
+      <div className="absolute right-[-20%] bottom-[-15%] md:right-[-10%] md:bottom-[-10%] opacity-5 pointer-events-none">
+        <svg
+          width="800"
+          height="800"
+          viewBox="0 0 32 32"
+          fill="none"
+          stroke="#FFFFFF"
+          className="w-[600px] h-[600px] md:w-[1000px] md:h-[1000px]"
+        >
+          <path
+            d="M26 12C26 6.477 21.523 2 16 2C10.477 2 6 6.477 6 12C6 19 16 30 16 30C16 30 26 19 26 12Z"
+            strokeWidth="0.5"
+          />
+          <g fill="#FFFFFF" stroke="none">
+            <circle cx="11" cy="7" r="1.5" />
+            <circle cx="16" cy="7" r="1.5" />
+            <circle cx="21" cy="7" r="1.5" />
+            <circle cx="11" cy="12" r="1.5" />
+            <circle cx="16" cy="12" r="1.5" />
+            <circle cx="21" cy="12" r="1.5" />
+            <circle cx="11" cy="17" r="1.5" />
+            <circle cx="16" cy="17" r="1.5" />
+            <circle cx="21" cy="17" r="1.5" />
+          </g>
+        </svg>
+      </div>
 
-        <div className="w-full max-w-[500px] mb-12 text-left bg-white p-2 border border-uber-gray-100 rounded-uber-lg shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-          <div className="mb-3 px-2 pt-2">
-            <span className="text-[14px] font-bold text-uber-black tracking-[-0.3px]">Try searching instead</span>
+      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="flex flex-col justify-center py-20 lg:py-32">
+          <span className="text-[#16B3A6] text-[14px] font-bold tracking-[4px] uppercase mb-6">
+            OOPS!
+          </span>
+          <h1 className="text-[56px] md:text-[72px] font-medium text-white leading-[1.05] tracking-tight mb-8">
+            Page not found.
+          </h1>
+          <p className="text-[18px] md:text-[20px] text-white/80 leading-[1.7] max-w-[440px] mb-12 font-light">
+            Please try retyping the address or start with our homepage.
+          </p>
+          <div>
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center h-14 px-10 bg-[#16B3A6] text-[#1A1A1A] text-[16px] font-bold rounded-full hover:brightness-110 shadow-[0_4px_14px_rgba(22,179,166,0.3)] hover:shadow-[0_6px_20px_rgba(22,179,166,0.5)] transition-all duration-300"
+            >
+              Go to homepage
+            </Link>
           </div>
-          <SearchBar variant="large" />
         </div>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center h-12 px-8 bg-uber-black text-white text-[15px] font-medium rounded-uber-pill hover:bg-uber-gray-800 transition-colors duration-uber-fast w-full sm:w-auto"
-          >
-            Go to homepage
-          </Link>
-          <Link
-            href="/materials"
-            className="inline-flex items-center justify-center h-12 px-8 bg-uber-gray-100 text-uber-black text-[15px] font-medium rounded-uber-pill hover:bg-uber-gray-200 transition-colors duration-uber-fast w-full sm:w-auto"
-          >
-            Browse materials
-          </Link>
-        </div>
+        
+        {/* Right column remains empty to enforce 50/50 asymmetrical balance and leave room for the watermark */}
+        <div className="hidden md:block"></div>
       </div>
     </div>
   );

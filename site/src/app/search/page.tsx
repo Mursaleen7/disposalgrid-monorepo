@@ -153,7 +153,7 @@ function SearchResults() {
                   variant="full"
                   name={f.name}
                   epaHandlerId={f.handler_id}
-                  address={`${f.address ?? ""}, ${f.city ?? ""}, ${f.state} ${f.zip_code ?? ""}`}
+                  address={[f.address, f.city, f.state, f.zip_code].filter(Boolean).join(", ")}
                   status={f.active_status}
                   isActive={(f.active_status ?? "").toLowerCase().includes("active")}
                   badges={[

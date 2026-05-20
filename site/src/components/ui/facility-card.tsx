@@ -153,7 +153,7 @@ export function FacilityCard({
           See full details
         </Link>
         <a
-          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name}, ${address}`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 h-9 px-4 bg-uber-black text-[13px] font-medium text-white rounded-uber hover:bg-uber-gray-800 transition-colors duration-uber-fast ease-uber"
